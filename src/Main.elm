@@ -1,19 +1,33 @@
 module Main exposing (..)
 
-import Html exposing (Html, text, div, h1, img)
-import Html.Attributes exposing (src)
+import Html exposing (Html, text, div, h1, img, span, input)
+import Html.Attributes exposing (src, type_)
+import Html.Events exposing (onInput)
 
 
 ---- MODEL ----
 
+type alias NewsItem =
+    { id : Int
+    , title : String
+    , image: String
+    , content: String
+    }
 
 type alias Model =
-    {}
+    { title : String
+    , newsList : List NewsItem
+    }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( {}, Cmd.none )
+    (
+        { title = "Hello Elm!"
+        , newsList = []
+        }
+    , Cmd.none
+    )
 
 
 
@@ -21,12 +35,17 @@ init =
 
 
 type Msg
-    = NoOp
+    = UpdateTitle String
+    | NoOp
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    ( model, Cmd.none )
+    case msg of
+    UpdateTitle title ->
+        ( { model | title = title }, Cmd.none)
+    _ ->
+        ( model, Cmd.none )
 
 
 
@@ -38,6 +57,15 @@ view model =
     div []
         [ img [ src "/logo.svg" ] []
         , h1 [] [ text "Your Elm App is working! Naisu!" ]
+        , span [] [ text model.title ]
+        , div []
+            [
+                input
+                    [ type_ "password"
+                    , onInput UpdateTitle
+                    ]
+                    []
+            ]
         ]
 
 
