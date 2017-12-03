@@ -47,7 +47,7 @@ update msg model =
     case msg of
     UpdateTitle title ->
         ( { model | title = title }, Cmd.none)
-    _ ->
+    NoOp ->
         ( model, Cmd.none )
 
 
