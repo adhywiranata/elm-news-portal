@@ -10,7 +10,6 @@ import Html.Events exposing (onInput)
 type alias NewsItem =
     { id : Int
     , title : String
-    , image: String
     , content: String
     }
 
@@ -24,7 +23,10 @@ init : ( Model, Cmd Msg )
 init =
     (
         { title = "Hello Elm!"
-        , newsList = []
+        , newsList =
+            [ { id = 1, title = "Hello", content = "lorem ipsum dolor.." }
+            , { id = 2, title = "Hellow", content = "lorem ipsum doler.." }
+            ]
         }
     , Cmd.none
     )
