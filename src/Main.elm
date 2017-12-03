@@ -73,7 +73,7 @@ view model =
     div []
         [ img [ src "/logo.svg" ] []
         , h1 [] [ text "Your Elm App is working! Naisu!" ]
-        , span [] [ text model.title ]
+        , span [] [ text ( "Title: " ++ model.title ) ]
         , div []
             [ input
                 [ type_ "password"
