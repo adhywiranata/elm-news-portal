@@ -4,6 +4,7 @@ import Html exposing (Html, text, div, h1, h2, h4, img, span, input, p)
 import Html.Attributes exposing (src, type_)
 import Html.Events exposing (onInput)
 
+import Header
 
 ---- MODEL ----
 
@@ -71,7 +72,8 @@ renderNewsList newsList =
 view : Model -> Html Msg
 view model =
     div []
-        [ img [ src "/logo.svg" ] []
+        [ Header.view
+        , img [ src "/logo.svg" ] []
         , h1 [] [ text "Your Elm App is working! Naisu!" ]
         , span [] [ text ( "Title: " ++ model.title ) ]
         , div []
