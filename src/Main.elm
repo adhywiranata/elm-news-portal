@@ -16,6 +16,13 @@ type alias NewsItem =
     , content : String
     }
 
+newsItemDecoder : Decoder NewsItem
+newsItemDecoder =
+    Json.Decode.map3 NewsItem
+        (field "id" Json.Decode.int)
+        (field "title" Json.Decode.string)
+        (field "content" Json.Decode.string)
+
 type alias Model =
     { title : String
     , newsList : List NewsItem
@@ -23,7 +30,9 @@ type alias Model =
     , sampleJson : String
     , decodedJsonArray : Result String (List Int)
     , decodedJsonObjNameField : Result String String
-    , decodedJsonObjAgeField : Result String Int 
+    , decodedJsonObjAgeField : Result String Int
+    , decodedNewsObj : Result String NewsItem
+    , objectifiedNews : NewsItem
     }
 
 init : ( Model, Cmd Msg )
@@ -41,10 +50,18 @@ init =
                 }
             ]
         , randomNumber = 0
-        , sampleJson = "\"hello\""
+        -- a json stringified
+        , sampleJson = """hello"""
+        -- a decoded array (with Result type)
         , decodedJsonArray = (decodeString (Json.Decode.list Json.Decode.int) "[1, 2, 3]")
+        -- a decoded object with name field (with Result type)
         , decodedJsonObjNameField = (decodeString (field "name" Json.Decode.string) """{"name":"john","age":5}""")
+        -- a decoded object with age field (with Result type)
         , decodedJsonObjAgeField = (decodeString (field "age" Json.Decode.int) """{"name":"john","age":5}""")
+        -- a decoded json (with Result type)
+        , decodedNewsObj = (decodeString newsItemDecoder """{"id":3,"title":"Elm is awesome","content":"Lorem ipsum dolor sit amet"}""")
+        -- a Result-parsed decoded json
+        , objectifiedNews = Result.withDefault { id = 0, title = "", content = "" } (decodeString newsItemDecoder """{"id":3,"title":"Elm is awesome","content":"Lorem ipsum dolor sit amet"}""")
         }
     , Cmd.none
     )
@@ -125,6 +142,7 @@ view model =
                             ++ ( toString model.decodedJsonObjAgeField )
                         ) ]
         , br [] []
+        , span [] [ text ("decoded news: " ++ ( toString model.decodedNewsObj )) ]
         , br [] []
         , div []
             [ input
