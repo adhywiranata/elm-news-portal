@@ -64,12 +64,27 @@ update msg model =
     -- side effects since it randomizes a number
     RollRandomNumber ->
         (model , Random.generate UpdateNumber (Random.int 1 10))
+    -- side effects to fetch articles 
+    -- FetchNews -> 
+    --     (model, Cmd.none)
     NoOp ->
         (model, Cmd.none)
 
 
 
 ---- VIEW ----
+
+renderHeading : Model -> Html Msg
+renderHeading model = 
+    div []
+        [ img [ src "/logo.svg" ] []
+        , h1 [] [ text "Your Elm App is working! Naisu!" ]
+        , span [] [ text ( "Title: " ++ model.title ) ]
+        , br [] []
+        , span [] [ text ( "Random Number: " ++ (toString model.randomNumber) ) ]
+        , br [] []
+        , br [] []    
+        ]
 
 renderNewsItem : NewsItem -> Html Msg
 renderNewsItem newsItem =
@@ -90,17 +105,13 @@ view : Model -> Html Msg
 view model =
     div []
         [ Header.view
-        , img [ src "/logo.svg" ] []
-        , h1 [] [ text "Your Elm App is working! Naisu!" ]
-        , span [] [ text ( "Title: " ++ model.title ) ]
-        , span [] [ text ( "Random Number: " ++ (toString model.randomNumber) ) ]
-        , br [] []
-        , br [] []
+        , renderHeading model
         , button [ onClick RollRandomNumber ] [ text "Randomize Number!" ]
+        , br [] []
         , br [] []
         , div []
             [ input
-                [ type_ "password"
+                [ type_ "text"
                 , onInput UpdateTitle
                 ]
                 []
