@@ -4,6 +4,7 @@ import Random exposing (..)
 import Html exposing (Html, text, div, h1, h2, h4, img, span, input, p, br, button)
 import Html.Attributes exposing (src, type_)
 import Html.Events exposing (onInput, onClick)
+import Json.Decode exposing (..)
 
 import Header
 
@@ -18,9 +19,12 @@ type alias NewsItem =
 type alias Model =
     { title : String
     , newsList : List NewsItem
-    , randomNumber: Int
+    , randomNumber : Int
+    , sampleJson : String
+    , decodedJsonArray : Result String (List Int)
+    , decodedJsonObjNameField : Result String String
+    , decodedJsonObjAgeField : Result String Int 
     }
-
 
 init : ( Model, Cmd Msg )
 init =
@@ -37,6 +41,10 @@ init =
                 }
             ]
         , randomNumber = 0
+        , sampleJson = "\"hello\""
+        , decodedJsonArray = (decodeString (Json.Decode.list Json.Decode.int) "[1, 2, 3]")
+        , decodedJsonObjNameField = (decodeString (field "name" Json.Decode.string) """{"name":"john","age":5}""")
+        , decodedJsonObjAgeField = (decodeString (field "age" Json.Decode.int) """{"name":"john","age":5}""")
         }
     , Cmd.none
     )
@@ -107,6 +115,15 @@ view model =
         [ Header.view
         , renderHeading model
         , button [ onClick RollRandomNumber ] [ text "Randomize Number!" ]
+        , br [] []
+        , br [] []
+        , span [] [ text ("decoded json array: " ++ ( toString model.decodedJsonArray ) ) ]
+        , br [] []
+        , span [] [ text (  "decoded json object fields: Name - "
+                            ++ ( toString model.decodedJsonObjNameField )
+                            ++ " , Age - "
+                            ++ ( toString model.decodedJsonObjAgeField )
+                        ) ]
         , br [] []
         , br [] []
         , div []
