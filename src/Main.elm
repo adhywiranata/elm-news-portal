@@ -1,6 +1,7 @@
 module Main exposing (..)
 
-import Html exposing (Html, text, div, h1, h2, h4, img, span, input, p)
+import Random exposing (..)
+import Html exposing (Html, text, div, h1, h2, h4, img, span, input, p, br, button)
 import Html.Attributes exposing (src, type_)
 import Html.Events exposing (onInput)
 
@@ -11,12 +12,13 @@ import Header
 type alias NewsItem =
     { id : Int
     , title : String
-    , content: String
+    , content : String
     }
 
 type alias Model =
     { title : String
     , newsList : List NewsItem
+    , randomNumber: Int
     }
 
 
@@ -25,9 +27,16 @@ init =
     (
         { title = "Hello Elm!"
         , newsList =
-            [ { id = 1, title = "Hello", content = "lorem ipsum dolor.." }
-            , { id = 2, title = "Hellow", content = "lorem ipsum doler.." }
+            [ { id = 1
+                , title = "Hello"
+                , content = "lorem ipsum dolor.."
+            }
+            , { id = 2
+                , title = "Hellow"
+                , content = "lorem ipsum doler.."
+                }
             ]
+        , randomNumber = 0
         }
     , Cmd.none
     )
@@ -39,16 +48,24 @@ init =
 
 type Msg
     = UpdateTitle String
+    | RollRandomNumber
+    | UpdateNumber Int
     | NoOp
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
+update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
     case msg of
     UpdateTitle title ->
-        ( { model | title = title }, Cmd.none)
+        ({ model | title = title }, Cmd.none)
+    -- this update number is pure, the side effect is controlled on RollRandomNumber
+    UpdateNumber newNumber ->
+        ({ model | randomNumber = newNumber }, Cmd.none)
+    -- side effects since it randomizes a number
+    RollRandomNumber ->
+        (model , Random.generate UpdateNumber (Random.int 1 10))
     NoOp ->
-        ( model, Cmd.none )
+        (model, Cmd.none)
 
 
 
@@ -76,6 +93,11 @@ view model =
         , img [ src "/logo.svg" ] []
         , h1 [] [ text "Your Elm App is working! Naisu!" ]
         , span [] [ text ( "Title: " ++ model.title ) ]
+        , span [] [ text ( "Random Number: " ++ (toString model.randomNumber) ) ]
+        , br [] []
+        , br [] []
+        , button [] [ text "Randomize Number!" ]
+        , br [] []
         , div []
             [ input
                 [ type_ "password"
