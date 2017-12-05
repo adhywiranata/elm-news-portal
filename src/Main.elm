@@ -3,7 +3,7 @@ module Main exposing (..)
 import Random exposing (..)
 import Html exposing (Html, text, div, h1, h2, h4, img, span, input, p, br, button)
 import Html.Attributes exposing (src, type_)
-import Html.Events exposing (onInput)
+import Html.Events exposing (onInput, onClick)
 
 import Header
 
@@ -96,7 +96,7 @@ view model =
         , span [] [ text ( "Random Number: " ++ (toString model.randomNumber) ) ]
         , br [] []
         , br [] []
-        , button [] [ text "Randomize Number!" ]
+        , button [ onClick RollRandomNumber ] [ text "Randomize Number!" ]
         , br [] []
         , div []
             [ input
